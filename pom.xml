@@ -102,8 +102,8 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>tattoosoft.web</groupId>
-				<artifactId>business</artifactId>
+				<groupId>com.xipilli</groupId>
+				<artifactId>tattoosoft.business</artifactId>
 				<version>${tattoosoft.version}</version>
 			</dependency>
 		</dependencies>
