@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @Configuration
 @EnableWebMvc
-@ComponentScan({ "com.tattoosoft.resource" })
+@ComponentScan({ "com.tattoosoft.resource", "com.tattoosoft.business" })
 public class ResourceServerWebConfig extends WebMvcConfigurerAdapter {
     //
 }

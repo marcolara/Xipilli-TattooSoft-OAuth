@@ -4,10 +4,9 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -20,54 +19,48 @@ import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 @Configuration
 @EnableResourceServer
-@ComponentScan({ "com.tattoosoft.business" })
 public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Autowired
 	DataSource dataSource;
-	
-    @Override
-    public void configure(final HttpSecurity http) throws Exception {
-        // @formatter:off
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and().authorizeRequests()
-				.anyRequest().permitAll();
-		// .requestMatchers().antMatchers("/foos/**","/bars/**")
-		// .and()
-		// .authorizeRequests()
-		// .antMatchers(HttpMethod.GET,"/foos/**").access("#oauth2.hasScope('foo')
-		// and #oauth2.hasScope('read')")
-		// .antMatchers(HttpMethod.POST,"/foos/**").access("#oauth2.hasScope('foo')
-		// and #oauth2.hasScope('write')")
-		// .antMatchers(HttpMethod.GET,"/bars/**").access("#oauth2.hasScope('bar')
-		// and #oauth2.hasScope('read')")
-		// .antMatchers(HttpMethod.POST,"/bars/**").access("#oauth2.hasScope('bar')
-		// and #oauth2.hasScope('write') and hasRole('ROLE_ADMIN')")
-		;
-		// @formatter:on
-    }
 
-    // Remote token service
-    /*
-    @Primary
-    @Bean
-    public RemoteTokenServices tokenService() {
-        final RemoteTokenServices tokenService = new RemoteTokenServices();
-        tokenService.setCheckTokenEndpointUrl("http://localhost:8081/tattoosoft-oauth-server/oauth/check_token");
-        tokenService.setClientId("fooClientIdPassword");
-        tokenService.setClientSecret("secret");
-        return tokenService;
-    }
-    */
+	@Override
+	public void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers(HttpMethod.POST, "/valid/**", "/valid/**/**").permitAll().and()
+				.authorizeRequests().anyRequest().permitAll().and().csrf().disable();
+		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+		// .and().authorizeRequests()
+		// .anyRequest().permitAll()
+		// .antMatchers(HttpMethod.POST, "/valid/**",
+		// "/valid/**/**").permitAll()
+		// .and().csrf().disable();
+	}
 
-    @Bean
-    @Primary
-    public ResourceServerTokenServices tokenServices() {
-        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore());
-        return defaultTokenServices;
-    }
+//	@Override
+//	public void configure(final HttpSecurity http) throws Exception {
+//		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and().authorizeRequests()
+//				.anyRequest().permitAll().antMatchers(HttpMethod.POST, "/valid/**").permitAll().and().csrf().disable();
+//	}
 
-    
+	// // Remote token service
+	// @Primary
+	// @Bean
+	// public RemoteTokenServices tokenService() {
+	// final RemoteTokenServices tokenService = new RemoteTokenServices();
+	// tokenService.setCheckTokenEndpointUrl("http://localhost:8081/tattoosoft-oauth-server/oauth/check_token");
+	// tokenService.setClientId("fooClientIdPassword");
+	// tokenService.setClientSecret("secret");
+	// return tokenService;
+	// }
+
+	@Bean
+	@Primary
+	public ResourceServerTokenServices tokenServices() {
+		final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+		defaultTokenServices.setTokenStore(tokenStore());
+		return defaultTokenServices;
+	}
+
 	// JWT token store
 	@Override
 	public void configure(final ResourceServerSecurityConfigurer config) {

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tattoosoft.business.form.AccountForm;
 import com.tattoosoft.business.form.ForgotPasswordForm;
 import com.tattoosoft.business.service.RegistrationService;
 import com.tattoosoft.business.web.rest.RestResponse;
@@ -37,6 +38,16 @@ public class AccountController {
 			throw new MethodArgumentNotValidException(new MethodParameter(this.getClass().getDeclaredMethod("resetPassword", ForgotPasswordForm.class, BindingResult.class), 0), result);
     	}
     	registrationService.recoverPasswordByEmail(form.getEmailAddress());
+        return RestResponse.forSuccess();
+    }
+    
+	// Handeling the reset of password
+    @RequestMapping(method = RequestMethod.POST)
+    public RestResponse<Object> register(@Valid @RequestBody AccountForm form, BindingResult result) throws NoSuchMethodException, SecurityException, MethodArgumentNotValidException {
+    	if (result.hasErrors()){
+			throw new MethodArgumentNotValidException(new MethodParameter(this.getClass().getDeclaredMethod("register", AccountForm.class, BindingResult.class), 0), result);
+    	}
+    	//registrationService.registerAccount(form);
         return RestResponse.forSuccess();
     }
 }
