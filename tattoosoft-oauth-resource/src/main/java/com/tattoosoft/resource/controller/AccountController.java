@@ -47,7 +47,7 @@ public class AccountController {
     	if (result.hasErrors()){
 			throw new MethodArgumentNotValidException(new MethodParameter(this.getClass().getDeclaredMethod("register", AccountForm.class, BindingResult.class), 0), result);
     	}
-    	//registrationService.registerAccount(form);
+    	registrationService.registerAccount(form);
         return RestResponse.forSuccess();
     }
 }
